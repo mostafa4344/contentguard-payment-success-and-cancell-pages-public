@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Successful – ContentGuard</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #0D1117;
-      color: #fff;
+      color: #E6EDF3;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -18,8 +18,8 @@
     }
     .card {
       background: #161B22;
-      border: 1px solid #30363D;
-      border-radius: 20px;
+      border: 1px solid #2EA043;
+      border-radius: 16px;
       padding: 40px 32px;
       max-width: 420px;
       width: 100%;
@@ -27,120 +27,115 @@
     }
     .icon {
       width: 80px; height: 80px;
-      background: #1a3a1a;
+      background: rgba(46,160,67,0.15);
+      border: 2px solid #2EA043;
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin: 0 auto 24px;
-      font-size: 40px;
+      font-size: 36px;
     }
-    h1 { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: #2EA043; }
-    .subtitle { color: #8B949E; font-size: 15px; line-height: 1.6; margin-bottom: 32px; }
-    .btn {
-      display: block;
-      background: #2EA043;
-      color: #fff;
-      text-decoration: none;
-      padding: 16px 24px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      transition: background 0.2s;
-    }
-    .btn:hover { background: #3fb950; }
-    .btn.secondary {
-      background: transparent;
-      border: 1px solid #30363D;
-      color: #8B949E;
-      font-size: 14px;
-    }
+    h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    p  { font-size: 14px; color: #8B949E; line-height: 1.6; margin-bottom: 8px; }
     .invoice {
       background: #0D1117;
-      border: 1px solid #21262D;
+      border: 1px solid #30363D;
       border-radius: 8px;
       padding: 10px 16px;
       font-size: 12px;
       color: #8B949E;
-      margin-bottom: 24px;
+      margin: 16px 0 24px;
       word-break: break-all;
     }
-    .status {
-      display: inline-block;
-      background: #1a3a1a;
-      color: #2EA043;
-      border-radius: 20px;
-      padding: 4px 14px;
-      font-size: 13px;
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
       font-weight: 600;
-      margin-bottom: 20px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 12px;
     }
-    #countdown { color: #8B949E; font-size: 13px; margin-top: 16px; }
+    .btn-primary {
+      background: #2EA043;
+      color: #fff;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #8B949E;
+      border: 1px solid #30363D;
+      font-size: 14px;
+    }
+    .status {
+      font-size: 12px;
+      color: #484F58;
+      margin-top: 16px;
+    }
   </style>
 </head>
 <body>
-<div class="card">
-  <div class="icon">✅</div>
-  <div class="status">Payment Verified</div>
-  <h1>Payment Successful!</h1>
-  <p class="subtitle">
-    Your ContentGuard Premium is being activated.<br>
-    Return to the app to complete activation.
-  </p>
-
-  <div class="invoice" id="invoice-box" style="display:none">
-    Invoice ID: <strong id="invoice-id"></strong>
+  <div class="card">
+    <div class="icon">✅</div>
+    <h1>Payment Successful!</h1>
+    <p>Your ContentGuard Premium subscription is being activated.</p>
+    <p>Tap the button below to return to the app.</p>
+    <div class="invoice" id="invoice-box">Retrieving invoice ID...</div>
+    <a class="btn btn-primary" id="open-app-btn" href="#">
+      🚀 Open ContentGuard App
+    </a>
+    <a class="btn btn-secondary" href="https://contentguard.paymently.io">
+      Back to Website
+    </a>
+    <p class="status" id="status-text">Redirecting to app automatically...</p>
   </div>
 
-  <a href="#" class="btn" id="open-app-btn">
-    🚀 Open ContentGuard App
-  </a>
-  <a href="https://contentguard.paymently.io" class="btn secondary">
-    Go to Homepage
-  </a>
+  <script>
+    // Extract invoice_id from URL query params
+    const params = new URLSearchParams(window.location.search);
+    const invoiceId = params.get('invoice_id') || '';
 
-  <div id="countdown"></div>
-</div>
-
-<script>
-  // Get invoice_id from URL query params
-  const params = new URLSearchParams(window.location.search);
-  const invoiceId = params.get('invoice_id') || params.get('invoice') || '';
-
-  // Show invoice ID
-  if (invoiceId) {
-    document.getElementById('invoice-id').textContent = invoiceId;
-    document.getElementById('invoice-box').style.display = 'block';
-  }
-
-  // Build deeplink: io.supabase.contentguard://payment-callback?invoice_id=XXX
-  const deeplink = invoiceId
-    ? 'io.supabase.contentguard://payment-callback?invoice_id=' + encodeURIComponent(invoiceId)
-    : 'io.supabase.contentguard://payment-callback';
-
-  // Set button href
-  document.getElementById('open-app-btn').href = deeplink;
-
-  // Auto-redirect to app after 2 seconds
-  let seconds = 2;
-  const countEl = document.getElementById('countdown');
-
-  function tryOpenApp() {
-    window.location.href = deeplink;
-  }
-
-  // Try to open app immediately
-  setTimeout(tryOpenApp, 500);
-
-  // Countdown display
-  const timer = setInterval(() => {
-    countEl.textContent = 'Auto-opening app in ' + seconds + 's...';
-    if (seconds <= 0) {
-      clearInterval(timer);
-      countEl.textContent = 'Tap the button above if app did not open.';
-      tryOpenApp();
+    // Update invoice display
+    const invoiceBox = document.getElementById('invoice-box');
+    if (invoiceId) {
+      invoiceBox.textContent = 'Invoice: ' + invoiceId;
+    } else {
+      invoiceBox.textContent = 'Invoice ID not found in URL';
+      invoiceBox.style.color = '#DA3633';
     }
-    seconds--;
-  }, 1000);
-</script>
+
+    // Build deep link with invoice_id
+    const deepLink = invoiceId
+      ? 'io.supabase.contentguard://payment-callback?invoice_id=' + encodeURIComponent(invoiceId)
+      : 'io.supabase.contentguard://payment-callback';
+
+    // Set button href
+    document.getElementById('open-app-btn').href = deepLink;
+
+    // Auto-redirect after 1.5 seconds
+    let attempts = 0;
+    function tryRedirect() {
+      attempts++;
+      document.getElementById('status-text').textContent =
+        'Auto-redirecting... (attempt ' + attempts + ')';
+
+      // Try to open the app via deep link
+      window.location.href = deepLink;
+
+      // If still here after 2s, try again once more
+      if (attempts < 2) {
+        setTimeout(tryRedirect, 2000);
+      } else {
+        document.getElementById('status-text').textContent =
+          'Tap "Open ContentGuard App" if not redirected automatically.';
+      }
+    }
+
+    // Start auto-redirect after short delay
+    setTimeout(tryRedirect, 1500);
+  </script>
 </body>
 </html>

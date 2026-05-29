@@ -7,39 +7,75 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0D1117; color: #fff;
-      min-height: 100vh; display: flex;
-      align-items: center; justify-content: center; padding: 24px;
+      background: #0D1117;
+      color: #E6EDF3;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
     .card {
-      background: #161B22; border: 1px solid #30363D;
-      border-radius: 20px; padding: 40px 32px;
-      max-width: 420px; width: 100%; text-align: center;
+      background: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 16px;
+      padding: 40px 32px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
     }
-    .icon { font-size: 64px; margin-bottom: 20px; }
-    h1 { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: #f85149; }
-    .subtitle { color: #8B949E; font-size: 15px; line-height: 1.6; margin-bottom: 28px; }
+    .icon {
+      width: 80px; height: 80px;
+      background: rgba(139,148,158,0.1);
+      border: 2px solid #484F58;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 36px;
+    }
+    h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    p  { font-size: 14px; color: #8B949E; line-height: 1.6; margin-bottom: 24px; }
     .btn {
-      display: block; background: #2EA043; color: #fff;
-      text-decoration: none; padding: 15px 24px;
-      border-radius: 12px; font-size: 16px; font-weight: 600; margin-bottom: 12px;
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .btn-primary { background: #2EA043; color: #fff; }
+    .btn-secondary {
+      background: transparent;
+      color: #8B949E;
+      border: 1px solid #30363D;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-<div class="card">
-  <div class="icon">❌</div>
-  <h1>Payment Cancelled</h1>
-  <p class="subtitle">Your payment was cancelled.<br>No charges were made.</p>
-  <a href="io.supabase.contentguard://payment-cancel" class="btn">
-    ← Return to ContentGuard
-  </a>
-</div>
-<script>
-  setTimeout(() => {
-    window.location.href = 'io.supabase.contentguard://payment-cancel';
-  }, 1000);
-</script>
+  <div class="card">
+    <div class="icon">❌</div>
+    <h1>Payment Cancelled</h1>
+    <p>Your payment was not completed. No charge was made.<br>You can try again anytime.</p>
+    <a class="btn btn-primary" id="back-btn"
+       href="io.supabase.contentguard://payment-cancel">
+      ← Return to App
+    </a>
+    <a class="btn btn-secondary" href="https://contentguard.paymently.io">
+      Back to Website
+    </a>
+  </div>
+  <script>
+    setTimeout(() => {
+      window.location.href = 'io.supabase.contentguard://payment-cancel';
+    }, 1500);
+  </script>
 </body>
 </html>
