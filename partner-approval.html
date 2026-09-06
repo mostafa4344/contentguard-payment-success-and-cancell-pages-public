@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Approval – ContentGuard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0D1117;
+      color: #E6EDF3;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+    .icon { font-size: 72px; line-height: 1; margin-bottom: 24px; display: block; }
+    h1 { font-size: 26px; font-weight: 700; margin-bottom: 14px; }
+    p { color: #8B949E; font-size: 15px; line-height: 1.7; margin-bottom: 8px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      border-radius: 24px;
+      padding: 8px 20px; font-size: 13px; font-weight: 600;
+      margin-top: 20px;
+    }
+    .divider { height: 1px; background: #30363D; margin: 28px 0; }
+    .footer { color: #8B949E; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="icon" id="icon"></span>
+    <h1 id="title"></h1>
+    <p id="message"></p>
+    <div class="divider"></div>
+    <div class="badge" id="badge">🛡️ ContentGuard</div>
+    <div class="divider"></div>
+    <p class="footer">You can close this window safely.</p>
+  </div>
+
+  <script>
+    // Query params are treated as untrusted input — every dynamic value is
+    // inserted via textContent, never innerHTML, so a crafted URL can't
+    // inject markup/scripts into this page.
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('status') || 'error';
+    const action = params.get('action') || '';
+    const detail = params.get('detail') || '';
+
+    const PRESETS = {
+      approved: {
+        icon: '✅', title: 'Request Approved', color: '#2EA043',
+        message: (a) => `You approved: ${a}. The ContentGuard app has been notified and will update immediately.`,
+      },
+      rejected: {
+        icon: '❌', title: 'Request Rejected', color: '#DA3633',
+        message: (a) => `You rejected: ${a}. The ContentGuard app has been notified.`,
+      },
+      already_approved: {
+        icon: '✅', title: 'Already Approved', color: '#2EA043',
+        message: (a) => `This request for "${a}" was already approved earlier.`,
+      },
+      already_rejected: {
+        icon: '❌', title: 'Already Rejected', color: '#DA3633',
+        message: (a) => `This request for "${a}" was already rejected earlier.`,
+      },
+      not_found: {
+        icon: '⚠️', title: 'Request Not Found', color: '#E3B341',
+        message: () => 'This approval request could not be found. It may have expired or been cancelled.',
+      },
+      invalid_link: {
+        icon: '⚠️', title: 'Invalid Link', color: '#E3B341',
+        message: () => 'This approval link is missing required parameters. Please check your email.',
+      },
+      invalid_action: {
+        icon: '⚠️', title: 'Invalid Action', color: '#E3B341',
+        message: () => 'The action in this link is not recognized.',
+      },
+      server_error: {
+        icon: '⚠️', title: 'Server Configuration Error', color: '#DA3633',
+        message: () => 'The server is not properly configured. Please contact support.',
+      },
+      lookup_error: {
+        icon: '⚠️', title: 'Server Error', color: '#DA3633',
+        message: () => 'An error occurred while looking up this request. Please try again.',
+      },
+      update_failed: {
+        icon: '⚠️', title: 'Update Failed', color: '#DA3633',
+        message: (a, d) => `Your decision could not be saved.${d ? ' Error: ' + d : ''} Please try again.`,
+      },
+      error: {
+        icon: '⚠️', title: 'Unexpected Error', color: '#DA3633',
+        message: () => 'Something went wrong. Please try again in a few moments.',
+      },
+    };
+
+    const preset = PRESETS[status] || PRESETS.error;
+
+    document.title = preset.title + ' – ContentGuard';
+    document.getElementById('icon').textContent = preset.icon;
+    document.getElementById('title').textContent = preset.title;
+    document.getElementById('title').style.color = preset.color;
+    document.getElementById('message').textContent = preset.message(action, detail);
+
+    const badge = document.getElementById('badge');
+    badge.style.background = preset.color + '18';
+    badge.style.color = preset.color;
+    badge.style.border = '1px solid ' + preset.color + '35';
+  </script>
+</body>
+</html>
