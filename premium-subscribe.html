@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentGuard Premium – Subscribe</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0D1117;
+      color: #E6EDF3;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #161B22;
+      border: 1px solid #30363D;
+      border-radius: 20px;
+      padding: 36px 32px;
+      max-width: 460px;
+      width: 100%;
+    }
+    .logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .logo-badge {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(46,160,67,0.15); border: 1.5px solid #2EA043;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    h1 { font-size: 20px; font-weight: 700; }
+    p.sub { color: #8B949E; font-size: 13.5px; margin-top: 6px; margin-bottom: 26px; line-height: 1.6; }
+
+    .plans { display: grid; gap: 10px; margin-bottom: 24px; }
+    .plan {
+      border: 1.5px solid #30363D;
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .plan:hover { border-color: #2EA04380; }
+    .plan.selected { border-color: #2EA043; background: rgba(46,160,67,0.08); }
+    .plan-left { display: flex; align-items: center; gap: 12px; }
+    .plan-radio {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid #30363D; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .plan.selected .plan-radio { border-color: #2EA043; }
+    .plan.selected .plan-radio::after {
+      content: ''; width: 9px; height: 9px; border-radius: 50%; background: #2EA043;
+    }
+    .plan-name { font-size: 14.5px; font-weight: 600; }
+    .plan-badge {
+      font-size: 10.5px; font-weight: 700; color: #E3B341;
+      background: rgba(227,179,65,0.12); border: 1px solid rgba(227,179,65,0.35);
+      padding: 2px 8px; border-radius: 10px; margin-left: 8px;
+    }
+    .plan-price { font-size: 15px; font-weight: 700; color: #2EA043; }
+    .plan-price .unit { font-size: 11px; color: #8B949E; font-weight: 500; }
+
+    label { display: block; font-size: 12.5px; color: #8B949E; margin-bottom: 6px; margin-top: 16px; }
+    input {
+      width: 100%; background: #0D1117; border: 1.5px solid #30363D; border-radius: 10px;
+      padding: 12px 14px; color: #E6EDF3; font-size: 14px; outline: none;
+      transition: border-color .15s;
+    }
+    input:focus { border-color: #2EA043; }
+    input::placeholder { color: #6E7681; }
+
+    .hint { font-size: 11.5px; color: #6E7681; margin-top: 6px; line-height: 1.5; }
+
+    .pay-btn {
+      width: 100%; margin-top: 26px; padding: 15px; border: none; border-radius: 12px;
+      background: #2EA043; color: white; font-size: 15.5px; font-weight: 700;
+      cursor: pointer; transition: opacity .15s, transform .1s;
+    }
+    .pay-btn:active { transform: scale(0.98); }
+    .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .badges { display: flex; gap: 8px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+    .badge {
+      font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px;
+      border: 1px solid; display: flex; align-items: center; gap: 4px;
+    }
+    .err {
+      display: none; background: rgba(218,54,51,0.1); border: 1px solid rgba(218,54,51,0.35);
+      color: #DA3633; font-size: 13px; border-radius: 10px; padding: 10px 12px; margin-top: 16px;
+    }
+    .footer-note { text-align: center; color: #6E7681; font-size: 11.5px; margin-top: 20px; line-height: 1.6; }
+
+    .spinner {
+      display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo-row">
+      <div class="logo-badge">🛡️</div>
+      <h1>ContentGuard Premium</h1>
+    </div>
+    <p class="sub">Unlock App Edit Protection with Accountability Lock. Pick a plan, pay securely, then sign in to the app with the same Gmail to activate.</p>
+
+    <div class="plans" id="plans"></div>
+
+    <form id="orderForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" placeholder="Your name" required autocomplete="name">
+
+      <label for="email">Gmail Address</label>
+      <input type="email" id="email" placeholder="you@gmail.com" required autocomplete="email">
+      <p class="hint">Must be the exact Gmail you'll use to sign in to ContentGuard — premium activates automatically for this address.</p>
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="01XXXXXXXXX" required autocomplete="tel">
+
+      <div class="err" id="errBox"></div>
+
+      <button type="submit" class="pay-btn" id="payBtn">
+        <span id="payBtnText">Continue to Payment</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+    </form>
+
+    <div class="badges">
+      <span class="badge" style="border-color:#E2136E55;color:#E2136E;">bKash</span>
+      <span class="badge" style="border-color:#F6871F55;color:#F6871F;">Nagad</span>
+      <span class="badge" style="border-color:#8C349455;color:#8C3494;">Rocket</span>
+      <span class="badge" style="border-color:#1A73E855;color:#1A73E8;">Card</span>
+    </div>
+    <p class="footer-note">Payments are processed securely via shurjoPay.<br>Need help? Email contentguard.support@gmail.com</p>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://ivpubslnnzrgluhfruoi.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_SAvd4h6SonEgcjwj7XyvMg_gnJwhpMU';
+
+    // Fallback prices shown immediately; overwritten once app_config loads
+    // (keeps this page in sync with the app's own pricing without edits here).
+    const PLAN_DEFS = [
+      { months: 2,  label: '2 Months',  fallbackPrice: 190 },
+      { months: 3,  label: '3 Months',  fallbackPrice: 300 },
+      { months: 6,  label: '6 Months',  fallbackPrice: 400, badge: 'POPULAR' },
+      { months: 12, label: '1 Year',    fallbackPrice: 600, badge: 'BEST VALUE' },
+    ];
+    let selectedMonths = 6;
+    let prices = {};
+
+    function renderPlans() {
+      const el = document.getElementById('plans');
+      el.innerHTML = '';
+      PLAN_DEFS.forEach(p => {
+        const price = prices[p.months] ?? p.fallbackPrice;
+        const div = document.createElement('div');
+        div.className = 'plan' + (selectedMonths === p.months ? ' selected' : '');
+        div.onclick = () => { selectedMonths = p.months; renderPlans(); };
+        div.innerHTML = `
+          <div class="plan-left">
+            <div class="plan-radio"></div>
+            <div>
+              <span class="plan-name">${p.label}</span>
+              ${p.badge ? `<span class="plan-badge">${p.badge}</span>` : ''}
+            </div>
+          </div>
+          <div class="plan-price">৳${price}</div>
+        `;
+        el.appendChild(div);
+      });
+    }
+    renderPlans();
+
+    // Best-effort live price fetch — silently keeps fallback prices on failure.
+    fetch(`${SUPABASE_URL}/rest/v1/app_config?select=key,value&key=like.plan_*m_price`, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+    }).then(r => r.ok ? r.json() : []).then(rows => {
+      rows.forEach(row => {
+        const m = row.key.match(/^plan_(\d+)m_price$/);
+        if (m) prices[parseInt(m[1], 10)] = parseFloat((row.value || '').trim());
+      });
+      renderPlans();
+    }).catch(() => {});
+
+    function showError(msg) {
+      const box = document.getElementById('errBox');
+      box.textContent = msg;
+      box.style.display = 'block';
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      document.getElementById('errBox').style.display = 'none';
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (!name || !email || !phone) { showError('Please fill in all fields.'); return; }
+
+      const btn = document.getElementById('payBtn');
+      btn.disabled = true;
+      document.getElementById('payBtnText').style.display = 'none';
+      document.getElementById('spinner').style.display = 'block';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/website-create-order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY },
+          body: JSON.stringify({
+            name, email, phone,
+            plan_months: selectedMonths,
+            amount: prices[selectedMonths] ?? PLAN_DEFS.find(p => p.months === selectedMonths).fallbackPrice,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.checkout_url) {
+          throw new Error(data.error || 'Could not start payment. Please try again.');
+        }
+        window.location.href = data.checkout_url;
+      } catch (err) {
+        showError(err.message || 'Something went wrong. Please try again.');
+        btn.disabled = false;
+        document.getElementById('payBtnText').style.display = 'inline';
+        document.getElementById('spinner').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

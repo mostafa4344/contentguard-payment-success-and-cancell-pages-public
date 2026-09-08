@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful – ContentGuard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0D1117;
+      color: #E6EDF3;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #161B22;
+      border: 1px solid #2EA043;
+      border-radius: 16px;
+      padding: 40px 32px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+    }
+    .icon {
+      width: 80px; height: 80px;
+      background: rgba(46,160,67,0.15);
+      border: 2px solid #2EA043;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 36px;
+    }
+    h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+    p  { font-size: 14px; color: #8B949E; line-height: 1.65; margin-bottom: 10px; }
+    .steps {
+      text-align: left;
+      background: #0D1117;
+      border: 1px solid #30363D;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin: 20px 0;
+    }
+    .step { display: flex; gap: 10px; padding: 7px 0; font-size: 13.5px; color: #C9D1D9; }
+    .step-num {
+      flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(46,160,67,0.18); color: #2EA043; font-size: 11.5px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .invoice {
+      background: #0D1117;
+      border: 1px solid #30363D;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 12px;
+      color: #8B949E;
+      margin: 18px 0;
+      word-break: break-all;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .btn-primary { background: #2EA043; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">✅</div>
+    <h1>Payment Successful!</h1>
+    <p>Your ContentGuard Premium subscription is confirmed.</p>
+
+    <div class="steps">
+      <div class="step"><span class="step-num">1</span><span>Install ContentGuard from the Play Store (button below).</span></div>
+      <div class="step"><span class="step-num">2</span><span>Open the app and tap <b>Continue with Google</b>.</span></div>
+      <div class="step"><span class="step-num">3</span><span>Sign in with the <b>exact same Gmail</b> you paid with — Premium unlocks automatically.</span></div>
+    </div>
+
+    <div class="invoice" id="invoice-box">Retrieving order ID...</div>
+
+    <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.halaltechlife.content_guard">
+      📲 Get ContentGuard on Play Store
+    </a>
+    <p style="margin-top:16px;font-size:12px;color:#6E7681;">
+      Questions? Email contentguard.support@gmail.com
+    </p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const invoiceId = params.get('invoice_id') || '';
+    const box = document.getElementById('invoice-box');
+    box.textContent = invoiceId ? 'Order: ' + invoiceId : 'Order ID not found in URL';
+    if (!invoiceId) box.style.color = '#DA3633';
+  </script>
+</body>
+</html>
