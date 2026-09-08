@@ -141,8 +141,8 @@
     <p class="footer-note">
       Payments are processed securely via shurjoPay.<br>
       Questions before you pay?
-      <a href="https://wa.me/8801568689505" target="_blank" rel="noopener" style="color:#25D366;font-weight:600;">WhatsApp us</a>
-      or email contentguard.support@gmail.com
+      <a id="waLink" href="#" target="_blank" rel="noopener" style="color:#25D366;font-weight:600;">WhatsApp us</a>
+      or email <span id="supportEmail">contentguard.support@gmail.com</span>
     </p>
   </div>
 
@@ -193,6 +193,23 @@
         if (m) prices[parseInt(m[1], 10)] = parseFloat((row.value || '').trim());
       });
       renderPlans();
+    }).catch(() => {});
+
+    // WhatsApp number / support email — editable anytime from Supabase
+    // Table Editor (app_config table, keys "website_whatsapp_number" and
+    // "website_support_email") without touching this page's code at all.
+    fetch(`${SUPABASE_URL}/rest/v1/app_config?select=key,value&key=in.(website_whatsapp_number,website_support_email)`, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+    }).then(r => r.ok ? r.json() : []).then(rows => {
+      rows.forEach(row => {
+        const val = (row.value || '').trim();
+        if (row.key === 'website_whatsapp_number' && val) {
+          document.getElementById('waLink').href = `https://wa.me/${val}`;
+        }
+        if (row.key === 'website_support_email' && val) {
+          document.getElementById('supportEmail').textContent = val;
+        }
+      });
     }).catch(() => {});
 
     function showError(msg) {

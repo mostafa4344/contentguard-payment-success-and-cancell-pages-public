@@ -92,11 +92,11 @@
 
     <div class="invoice" id="invoice-box">Retrieving order ID...</div>
 
-    <a class="btn btn-whatsapp" href="https://wa.me/8801568689505" target="_blank" rel="noopener">
+    <a class="btn btn-whatsapp" id="waLink" href="https://wa.me/8801568689505" target="_blank" rel="noopener">
       💬 Need help? Message us on WhatsApp
     </a>
     <p style="margin-top:16px;font-size:12px;color:#6E7681;">
-      Or email contentguard.support@gmail.com
+      Or email <span id="supportEmail">contentguard.support@gmail.com</span>
     </p>
   </div>
 
@@ -106,6 +106,24 @@
     const box = document.getElementById('invoice-box');
     box.textContent = invoiceId ? 'Order: ' + invoiceId : 'Order ID not found in URL';
     if (!invoiceId) box.style.color = '#DA3633';
+
+    // WhatsApp number / support email — editable anytime from Supabase
+    // Table Editor (app_config table) without touching this page's code.
+    const SUPABASE_URL = 'https://ivpubslnnzrgluhfruoi.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_SAvd4h6SonEgcjwj7XyvMg_gnJwhpMU';
+    fetch(`${SUPABASE_URL}/rest/v1/app_config?select=key,value&key=in.(website_whatsapp_number,website_support_email)`, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+    }).then(r => r.ok ? r.json() : []).then(rows => {
+      rows.forEach(row => {
+        const val = (row.value || '').trim();
+        if (row.key === 'website_whatsapp_number' && val) {
+          document.getElementById('waLink').href = `https://wa.me/${val}`;
+        }
+        if (row.key === 'website_support_email' && val) {
+          document.getElementById('supportEmail').textContent = val;
+        }
+      });
+    }).catch(() => {});
   </script>
 </body>
 </html>
